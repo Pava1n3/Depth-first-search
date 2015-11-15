@@ -87,14 +87,43 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+  
+    """
+    - a 'node', which contains its x and y, and information on how to get to this node (the step that was taken to get here, so just its predecessor)
+    - a fringe (queue) containing unexplored nodes, add the new nodes to the front of the queue
+    - a closed list containing explored nodes
+    
+    - given an x and a y, test if it is the goal node (isGoalState)
+    -- construct a solution if it is 
+    -- if not, expand the node (getSuccessors), these new nodes are the front of the queue
+    -- the current node is added to the closed list
+    - do a recursive call to these steps with the front of the queue
+    
+    - WHEN the queue is popped, it might be a good idea to test if this node is not in 'closed'
+    - I think it is a good idea to test for that here
+    """
+    "node: ([x,y], 'Direction', 1)"
+    
+    q = util.Queue()
+    c = []
+    
+    def dfsearch(loc)
+        if(problem.isGoalState(loc)
+            getSolution(loc)
+        
+        expand(loc)
+        
+        dfsearch(q.Pop())
+    
+    def getSolution(loc)
+        util.raiseNotDefined()
+        
+    def expand(loc)
+        util.raiseNotDefined()
+    
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    
-    q = util.Queue()
-    q.push(4)
-    
-    print q.pop()
     
     util.raiseNotDefined()
     

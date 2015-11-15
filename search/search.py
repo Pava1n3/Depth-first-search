@@ -104,22 +104,50 @@ def depthFirstSearch(problem):
     """
     "node: ([x,y], 'Direction', 1)"
     
+    "the queue, our 'fringe'"
     q = util.Queue()
+    "'closed', list of visited nodes"
     c = []
+    "list of directions which pacman can use to move"
+    solution = []
+    loc = [x, y]
     
-    def dfsearch(loc)
-        if(problem.isGoalState(loc)
+    def dfsearch(loc):
+        util.raiseNotDefined()
+        """if(problem.isGoalState(loc))
             getSolution(loc)
         
         expand(loc)
         
-        dfsearch(q.Pop())
+        dfsearch(q.Pop())"""
     
-    def getSolution(loc)
-        util.raiseNotDefined()
+    "I think we might have to use the direction we came from to calculate the [x,y] of the predecessor, find the data of this node in the closed list and iterate on that"
+    "find the loc in the closed list, store the action of how to get there in solution, calculate the predecessor, repeat until the predecessor matches the problem.getStartState"
+    def getSolution(loc):
+        "consider it a help function, so I can locate the full pair in the closed list based on the coordinates [x,y] of a pair"
+        cc = map(getFirst(), closed)
+        "predecessor"
+        a,b,c = closed[cc.index(loc)]
+        "add the direction to the front of the solution list"
+        solution.insert(0, b)
         
-    def expand(loc)
+        x,y = a
+        
         util.raiseNotDefined()
+    
+    "expand the fringe"
+    def expand(loc):
+        util.raiseNotDefined()
+    
+    "returns the first element of a pair that has 3 elements"
+    def getFirst((x, y, z)):
+        return x
+        
+    def getPredCoor((x, y), dir):
+        util.raiseNotDefined()
+        """if(dir == Directions.North)
+            return (x, y - 1)
+        else return (x, y)"""
     
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())

@@ -1,4 +1,4 @@
-# search.py
+﻿# search.py
 # ---------
 # Licensing Information:  You are free to use or extend these projects for
 # educational purposes provided that (1) you do not distribute or publish
@@ -87,73 +87,45 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-  
-    """
-    - a 'node', which contains its x and y, and information on how to get to this node (the step that was taken to get here, so just its predecessor)
-    - a fringe (queue) containing unexplored nodes, add the new nodes to the front of the queue
-    - a closed list containing explored nodes
+
+    # node: ((x,y), 'Direction', 1)
     
-    - given an x and a y, test if it is the goal node (isGoalState)
-    -- construct a solution if it is 
-    -- if not, expand the node (getSuccessors), these new nodes are the front of the queue
-    -- the current node is added to the closed list
-    - do a recursive call to these steps with the front of the queue
-    
-    - WHEN the queue is popped, it might be a good idea to test if this node is not in 'closed'
-    - I think it is a good idea to test for that here
-    """
-    "node: ([x,y], 'Direction', 1)"
-    
-    "the queue, our 'fringe'"
-    q = util.Queue()
-    "'closed', list of visited nodes"
-    c = []
-    "list of directions which pacman can use to move"
+    # the stack, our 'fringe'
+    fringe = util.Stack()
+    # 'closed', list of visited nodes
+    closed = []
+    # list of directions which pacman can use to move
     solution = []
-    loc = [x, y]
+
+    location = problem.getStartState()
     
-    def dfsearch(loc):
-        util.raiseNotDefined()
-        """if(problem.isGoalState(loc))
-            getSolution(loc)
-        
-        expand(loc)
-        
-        dfsearch(q.Pop())"""
-    
-    "I think we might have to use the direction we came from to calculate the [x,y] of the predecessor, find the data of this node in the closed list and iterate on that"
-    "find the loc in the closed list, store the action of how to get there in solution, calculate the predecessor, repeat until the predecessor matches the problem.getStartState"
-    def getSolution(loc):
-        "consider it a help function, so I can locate the full pair in the closed list based on the coordinates [x,y] of a pair"
-        cc = map(getFirst(), closed)
-        "predecessor"
-        a,b,c = closed[cc.index(loc)]
-        "add the direction to the front of the solution list"
-        solution.insert(0, b)
-        
-        x,y = a
-        
-        util.raiseNotDefined()
-    
-    "expand the fringe"
-    def expand(loc):
-        util.raiseNotDefined()
-    
-    "returns the first element of a pair that has 3 elements"
-    def getFirst((x, y, z)):
-        return x
-        
-    def getPredCoor((x, y), dir):
-        util.raiseNotDefined()
-        """if(dir == Directions.North)
-            return (x, y - 1)
-        else return (x, y)"""
+    while not problem.isGoalState(location):
+        # put location in closed list
+        closed.append(location)
+        # get the successors of location
+        successors = problem.getSuccessors(location)
+
+        # put all successors not in the closed list in the fringe
+        # IF ALL SUCCESSORS ARE IN THIS CLOSED LIST, IT BREAKS!! FIX THIS
+        for successor in successors:
+            if successor[0] not in closed:
+                fringe.push(successor)
+
+        # get the first node in the fringe that is not in the closed list
+        node = fringe.pop()
+
+        location = node[0]
+        solution.append(node[1])
     
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    
-    util.raiseNotDefined()
+    print "Fringe:", fringe.list
+    print "Location:", location
+    print "Solution:", solution
+
+    return solution
+    # util.raiseNotDefined()
     
 
 def breadthFirstSearch(problem):

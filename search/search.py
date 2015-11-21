@@ -1,4 +1,4 @@
-# search.py
+﻿# search.py
 # ---------
 # Licensing Information:  You are free to use or extend these projects for
 # educational purposes provided that (1) you do not distribute or publish
@@ -87,6 +87,7 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
+<<<<<<< HEAD
     from game import Directions
     """
     - a 'node', which contains its x and y, and information on how to get to this node (the step that was taken to get here, so just its predecessor)
@@ -104,13 +105,18 @@ def depthFirstSearch(problem):
     """
     
     "node: ([x,y], 'Direction', 1)"
+=======
+
+    # node: ((x,y), 'Direction', 1)
+>>>>>>> origin/master
     
-    "the queue, our 'fringe'"
-    q = util.Queue()
-    "'closed', list of visited nodes"
-    c = []
-    "list of directions which pacman can use to move"
+    # the stack, our 'fringe'
+    fringe = util.Stack()
+    # 'closed', list of visited nodes
+    closed = []
+    # list of directions which pacman can use to move
     solution = []
+<<<<<<< HEAD
     
     def dfsearch(loc):
         util.raiseNotDefined()
@@ -148,12 +154,38 @@ def depthFirstSearch(problem):
             return (x, y - 1)
         else :
             return (x, y)
+=======
+
+    location = problem.getStartState()
+    
+    while not problem.isGoalState(location):
+        # put location in closed list
+        closed.append(location)
+        # get the successors of location
+        successors = problem.getSuccessors(location)
+
+        # put all successors not in the closed list in the fringe
+        # IF ALL SUCCESSORS ARE IN THIS CLOSED LIST, IT BREAKS!! FIX THIS
+        for successor in successors:
+            if successor[0] not in closed:
+                fringe.push(successor)
+
+        # get the first node in the fringe that is not in the closed list
+        node = fringe.pop()
+
+        location = node[0]
+        solution.append(node[1])
+>>>>>>> origin/master
     
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    
-    util.raiseNotDefined()
+    print "Fringe:", fringe.list
+    print "Location:", location
+    print "Solution:", solution
+
+    return solution
+    # util.raiseNotDefined()
     
 
 def breadthFirstSearch(problem):

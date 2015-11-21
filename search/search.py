@@ -87,7 +87,6 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-<<<<<<< HEAD
     from game import Directions
     """
     - a 'node', which contains its x and y, and information on how to get to this node (the step that was taken to get here, so just its predecessor)
@@ -103,20 +102,13 @@ def depthFirstSearch(problem):
     - WHEN the queue is popped, it might be a good idea to test if this node is not in 'closed'
     - I think it is a good idea to test for that here
     """
-    
-    "node: ([x,y], 'Direction', 1)"
-=======
-
     # node: ((x,y), 'Direction', 1)
->>>>>>> origin/master
-    
     # the stack, our 'fringe'
     fringe = util.Stack()
     # 'closed', list of visited nodes
     closed = []
     # list of directions which pacman can use to move
     solution = []
-<<<<<<< HEAD
     
     def dfsearch(loc):
         util.raiseNotDefined()
@@ -154,7 +146,6 @@ def depthFirstSearch(problem):
             return (x, y - 1)
         else :
             return (x, y)
-=======
 
     location = problem.getStartState()
     
@@ -169,13 +160,15 @@ def depthFirstSearch(problem):
         for successor in successors:
             if successor[0] not in closed:
                 fringe.push(successor)
-
+        
+        """Would it be an idea, that when a node has no successor, to remove the last entry to solution, and than call the algorithm on the 'new' last node in solution?
+        Or, we could crun a small while loop that removes all nodes from the back of the solution that have no successoror"""
+        
         # get the first node in the fringe that is not in the closed list
         node = fringe.pop()
 
         location = node[0]
         solution.append(node[1])
->>>>>>> origin/master
     
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())

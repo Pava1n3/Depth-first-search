@@ -73,112 +73,81 @@ def tinyMazeSearch(problem):
     return  [s, s, w, s, w, w, s, w]
 
 def depthFirstSearch(problem):
-    """
-    Search the deepest nodes in the search tree first.
+    #   _______________
+    #  /               \
+    # /     R.I.P.      \
+    # |                 |
+    # | Marijn's ideeën |
+    # |                 |
+    # |   Moge zij in   |
+    # |  vrede rusten   |
+    # |                 |
+    # |   15-11-2015    |
+    # |   21-11-2015    |
+    # |                 |
+    # |_________________|
 
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
+    # state: (currentLocation, directionFromPrevtoCurr, 1)
+    # node:  (currentLocation, (previousLocation, directionFromPrevToCurr))
 
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    """
-    "*** YOUR CODE HERE ***"
     from game import Directions
-    """
-    - a 'node', which contains its x and y, and information on how to get to this node (the step that was taken to get here, so just its predecessor)
-    - a fringe (queue) containing unexplored nodes, add the new nodes to the front of the queue
-    - a closed list containing explored nodes
+    s = Directions.STOP
     
-    - given an x and a y, test if it is the goal node (isGoalState)
-    -- construct a solution if it is 
-    -- if not, expand the node (getSuccessors), these new nodes are the front of the queue
-    -- the current node is added to the closed list
-    - do a recursive call to these steps with the front of the queue
-    
-    - WHEN the queue is popped, it might be a good idea to test if this node is not in 'closed'
-    - I think it is a good idea to test for that here
-    """
-    # node: ((x,y), 'Direction', 1)
     # the stack, our 'fringe'
+    # an item in this stack is a node
     fringe = util.Stack()
-    # 'closed', list of visited nodes
+
+    # 'closed', the list of visited nodes
+    # an item in this list is a node
     closed = []
+
     # list of directions which pacman can use to move
     solution = []
     
-    def dfsearch(loc):
-        util.raiseNotDefined()
-        """if(problem.isGoalState(loc))
-            getSolution(loc)
-        
-        expand(loc)
-        
-        dfsearch(q.Pop())"""
-    
-    "I think we might have to use the direction we came from to calculate the [x,y] of the predecessor, find the data of this node in the closed list and iterate on that"
-    "find the loc in the closed list, store the action of how to get there in solution, calculate the predecessor, repeat until the predecessor matches the problem.getStartState"
-    def getSolution(loc):
-        "consider it a help function, so I can locate the full pair in the closed list based on the coordinates [x,y] of a pair"
-        cc = map(getFirst(), closed)
-        "predecessor"
-        a,b,c = closed[cc.index(loc)]
-        "add the direction to the front of the solution list"
-        solution.insert(0, b)
-        
-        x,y = a
-        
-        util.raiseNotDefined()
-    
-    "expand the fringe"
-    def expand(loc):
-        util.raiseNotDefined()
-    
-    "returns the first element of a pair that has 3 elements"
-    def getFirst((x, y, z)):
-        return x
-        
-    def getPredCoor((x, y), dir):
-        if dir == Directions.NORTH:
-            return (x, y - 1)
-        else :
-            return (x, y)
+    # put the start node in the fringe
+    startLocation = problem.getStartState()
+    node = (startLocation, (startLocation, s))
+    fringe.push(node)
+    goal = ()
 
-    location = problem.getStartState()
-    
-    while not problem.isGoalState(location):
-        # put location in closed list
-        closed.append(location)
-        # get the successors of location
-        successors = problem.getSuccessors(location)
-
-        # put all successors not in the closed list in the fringe
-        # IF ALL SUCCESSORS ARE IN THIS CLOSED LIST, IT BREAKS!! FIX THIS
-        for successor in successors:
-            if successor[0] not in closed:
-                fringe.push(successor)
-        
-        """Would it be an idea, that when a node has no successor, to remove the last entry to solution, and than call the algorithm on the 'new' last node in solution?
-        Or, we could crun a small while loop that removes all nodes from the back of the solution that have no successoror"""
-        
-        # get the first node in the fringe that is not in the closed list
+    while not fringe.isEmpty():
+        # get a node from the fringe
         node = fringe.pop()
 
-        location = node[0]
-        solution.append(node[1])
-    
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    print "Fringe:", fringe.list
-    print "Location:", location
-    print "Solution:", solution
+        # check if the is not in the closed list
+        if node[0] not in dict(closed):
+            # if it isn't, put it in the closed list
+            closed.append(node)
+
+            # if this node is the goal, stop
+            if problem.isGoalState(node[0]):
+                goal = node
+                break
+
+            # otherwise, put all successors in the fringe
+            successors = problem.getSuccessors(node[0])
+            for successor in successors:
+                fringe.push((successor[0], (node[0], successor[1])))
+
+    # converting the list to a dictionary
+    # to allow searching a key (the location)
+    # for its value (the previous location and the direction)
+    closed = dict(closed)
+
+    # put the (proper) directions in the solution list
+    while goal[0] in closed and goal[1] != s:
+        solution.append(closed[goal[0]][1])
+        goal = closed[goal[0]]
+        # print "Goal node:", goal
+
+    # since the solution went from the goal to the starting point
+    # the list has to be reversed
+    solution.reverse()
+
+    # remove the very first element
+    solution = solution[1:]
 
     return solution
-    # util.raiseNotDefined()
     
 
 def breadthFirstSearch(problem):

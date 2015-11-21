@@ -87,7 +87,7 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-  
+    from game import Directions
     """
     - a 'node', which contains its x and y, and information on how to get to this node (the step that was taken to get here, so just its predecessor)
     - a fringe (queue) containing unexplored nodes, add the new nodes to the front of the queue
@@ -102,6 +102,7 @@ def depthFirstSearch(problem):
     - WHEN the queue is popped, it might be a good idea to test if this node is not in 'closed'
     - I think it is a good idea to test for that here
     """
+    
     "node: ([x,y], 'Direction', 1)"
     
     "the queue, our 'fringe'"
@@ -110,7 +111,6 @@ def depthFirstSearch(problem):
     c = []
     "list of directions which pacman can use to move"
     solution = []
-    loc = [x, y]
     
     def dfsearch(loc):
         util.raiseNotDefined()
@@ -144,10 +144,10 @@ def depthFirstSearch(problem):
         return x
         
     def getPredCoor((x, y), dir):
-        util.raiseNotDefined()
-        """if(dir == Directions.North)
+        if dir == Directions.NORTH:
             return (x, y - 1)
-        else return (x, y)"""
+        else :
+            return (x, y)
     
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())

@@ -153,12 +153,155 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from game import Directions
+    s = Directions.STOP
+    
+    # the stack, our 'fringe'
+    # an item in this stack is a node
+    fringe = util.Queue()
+
+    # 'closed', the list of visited nodes
+    # an item in this list is a node
+    closed = []
+
+    # list of directions which pacman can use to move
+    solution = []
+    
+    # put the start node in the fringe
+    startLocation = problem.getStartState()
+    node = (startLocation, (startLocation, s))
+    fringe.push(node)
+    goal = ()
+
+    while not fringe.isEmpty():
+        # get a node from the fringe
+        node = fringe.pop()
+
+        # check if the is not in the closed list
+        if node[0] not in dict(closed):
+            # if it isn't, put it in the closed list
+            closed.append(node)
+
+            # if this node is the goal, stop
+            if problem.isGoalState(node[0]):
+                goal = node
+                break
+
+            # otherwise, put all successors in the fringe
+            successors = problem.getSuccessors(node[0])
+            for successor in successors:
+                fringe.push((successor[0], (node[0], successor[1])))
+
+    # converting the list to a dictionary
+    # to allow searching a key (the location)
+    # for its value (the previous location and the direction)
+    closed = dict(closed)
+
+    # put the (proper) directions in the solution list
+    while goal[0] in closed and goal[1] != s:
+        solution.append(closed[goal[0]][1])
+        goal = closed[goal[0]]
+        # print "Goal node:", goal
+
+    # since the solution went from the goal to the starting point
+    # the list has to be reversed
+    solution.reverse()
+
+    # remove the very first element
+    solution = solution[1:]
+    
+    return solution
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    """
+    procedure UniformCostSearch(Graph, start, goal)
+    node ← start
+    cost ← 0
+    frontier ← priority queue containing node only
+    explored ← empty set
+    do
+        if frontier is empty
+          return failure
+        node ← frontier.pop()
+        if node is goal
+          return solution
+        explored.add(node)
+        for each of node's neighbors n
+          if n is not in explored
+            if n is not in frontier
+              frontier.add(n)
+            else if n is in frontier with higher cost
+              replace existing node with n
+    """
+    
+    "We will need to use getCostOfActions probably, as this returns the correct cost of moving somewhere"
+    
+    from game import Directions
+    
+    # state: (currentLocation, directionFromPrevtoCurr, 1)
+    # node:  (currentLocation, (previousLocation, directionFromPrevToCurr))
+    
+    #For when you literally can't even
+    #STOP has a step cost of 1
+    s = Directions.STOP
+    
+    #Priority queue, data in the queue should be pushed as push(item, cost)
+    fringe = util.PriorityQueue()
+    
+    #List of explored nodes
+    closed = []
+    
+    # list of directions which pacman can use to move
+    solution = []
+    
+    # put the start node in the fringe
+    startLocation = problem.getStartState()
+    node = (startLocation, (startLocation, s))
+    fringe.push(node, 1)
+    goal = ()
+    
+    while not fringe.isEmpty():
+        node = fringe.pop()
+        
+        # check if the is not in the closed list
+        if node[0] not in dict(closed):
+            # if it isn't, put it in the closed list
+            closed.append(node)
+            
+            # if this node is the goal, stop
+            if problem.isGoalState(node[0]):
+                goal = node
+                break
+                
+            # otherwise, put all successors in the fringe
+            successors = problem.getSuccessors(node[0])
+            for successor in successors:
+                #checking if something is already in the fringe is discouraged, just add it again with a new priority. This is what I understood from prioqueue
+                    fringe.push((successor[0], (node[0], successor[1])), successor[2])
+        
+    
+    # converting the list to a dictionary
+    # to allow searching a key (the location)
+    # for its value (the previous location and the direction)
+    closed = dict(closed)
+
+    # put the (proper) directions in the solution list
+    while goal[0] in closed and goal[1] != s:
+        solution.append(closed[goal[0]][1])
+        goal = closed[goal[0]]
+        # print "Goal node:", goal
+
+    # since the solution went from the goal to the starting point
+    # the list has to be reversed
+    solution.reverse()
+
+    # remove the very first element
+    solution = solution[1:]
+
+    
+    return solution
 
 def nullHeuristic(state, problem=None):
     """

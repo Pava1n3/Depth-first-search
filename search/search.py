@@ -258,8 +258,8 @@ def uniformCostSearch(problem):
     
     # put the start node in the fringe
     startLocation = problem.getStartState()
-    node = (startLocation, (startLocation, s))
-    fringe.push(node, 1)
+    node = (startLocation, (startLocation, s, 0))
+    fringe.push(node, 0)
     goal = ()
     
     while not fringe.isEmpty():
@@ -278,9 +278,8 @@ def uniformCostSearch(problem):
             # otherwise, put all successors in the fringe
             successors = problem.getSuccessors(node[0])
             for successor in successors:
-                #checking if something is already in the fringe is discouraged, just add it again with a new priority. This is what I understood from prioqueue
-                    fringe.push((successor[0], (node[0], successor[1])), successor[2])
-        
+                #checking if something is already in the fringe is discouraged, just add it again with a new priority. This is what I understood from the comments in util.py, in the priorityqueue class
+                    fringe.push((successor[0], (node[0], successor[1], successor[2] + node[1][2])), successor[2] + node[1][2])
     
     # converting the list to a dictionary
     # to allow searching a key (the location)

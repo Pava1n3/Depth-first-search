@@ -1,4 +1,4 @@
-# searchAgents.py
+﻿# searchAgents.py
 # ---------------
 # Licensing Information:  You are free to use or extend these projects for
 # educational purposes provided that (1) you do not distribute or publish
@@ -295,6 +295,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
+        
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -302,7 +303,9 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        return state in self.corners
+        # util.raiseNotDefined()
 
     def getSuccessors(self, state):
         """
@@ -325,6 +328,13 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+
+            x, y = state
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+            print "Hits wall:", hitsWall
+            util.raiseNotDefined()
 
         self._expanded += 1 # DO NOT CHANGE
         return successors

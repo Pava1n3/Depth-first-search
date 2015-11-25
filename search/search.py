@@ -241,7 +241,7 @@ def uniformCostSearch(problem):
     from game import Directions
     
     # state: (currentLocation, directionFromPrevtoCurr, 1)
-    # node:  (currentLocation, (previousLocation, directionFromPrevToCurr))
+    # node:  (currentLocation, (previousLocation, directionFromPrevToCurr, costForThisStep))
     
     #For when you literally can't even
     #STOP has a step cost of 1

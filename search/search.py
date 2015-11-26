@@ -87,8 +87,9 @@ def depthFirstSearch(problem):
     # |                 |
     # |_________________|
 
-    # state: (currentLocation, directionFromPrevtoCurr, 1)
-    # node:  (currentLocation, (previousLocation, directionFromPrevToCurr))
+    # state: (currentLocation, directionFromPrevtoCurr, cost)
+    # node:  (currentState, previousState)
+    #       ((currentLocation, directionFromPrevToCurr, cost), (previousLocation, _, cost))
 
     from game import Directions
     s = Directions.STOP
@@ -105,47 +106,40 @@ def depthFirstSearch(problem):
     solution = []
     
     # put the start node in the fringe
-    startLocation = problem.getStartState()
-    node = (startLocation, (startLocation, s))
+    startState = problem.getStartState()
+    node = (startState, s, 1), (startState, s, 1)
     fringe.push(node)
-    goal = ()
 
     while not fringe.isEmpty():
         # get a node from the fringe
         node = fringe.pop()
 
-        # check if the is not in the closed list
-        if node[0] not in dict(closed):
+        # check if currentLocation is not a currentLocation in the closed list
+        if node[0][0] not in [x[0][0] for x in closed]:
             # if it isn't, put it in the closed list
             closed.append(node)
 
             # if this node is the goal, stop
-            if problem.isGoalState(node[0]):
-                goal = node
+            if problem.isGoalState(node[0][0]):
+                goal = node[0]
                 break
 
             # otherwise, put all successors in the fringe
-            successors = problem.getSuccessors(node[0])
+            successors = problem.getSuccessors(node[0][0])
             for successor in successors:
-                fringe.push((successor[0], (node[0], successor[1])))
+                fringe.push((successor, node[0]))
 
     # converting the list to a dictionary
     # to allow searching a key (the location)
     # for its value (the previous location and the direction)
     closed = dict(closed)
 
-    # put the (proper) directions in the solution list
-    while goal[0] in closed and goal[1] != s:
-        solution.append(closed[goal[0]][1])
-        goal = closed[goal[0]]
-        # print "Goal node:", goal
-
-    # since the solution went from the goal to the starting point
-    # the list has to be reversed
-    solution.reverse()
-
-    # remove the very first element
-    solution = solution[1:]
+    # while you can go to the goal and while the direction is not STOP
+    while goal in closed and goal[1] != s:
+        # put the direction in the front of the solution
+        solution.insert(0, goal[1])
+        # set the previous state as the new goal
+        goal = closed[goal]
 
     return solution
     
@@ -168,48 +162,42 @@ def breadthFirstSearch(problem):
     solution = []
     
     # put the start node in the fringe
-    startLocation = problem.getStartState()
-    node = (startLocation, (startLocation, s))
+    startState = problem.getStartState()
+    node = (startState, s, 1), (startState, s, 1)
     fringe.push(node)
-    goal = ()
 
     while not fringe.isEmpty():
         # get a node from the fringe
         node = fringe.pop()
 
-        # check if the is not in the closed list
-        if node[0] not in dict(closed):
+        # check if currentLocation is not a currentLocation in the closed list
+        if node[0][0] not in [x[0][0] for x in closed]:
             # if it isn't, put it in the closed list
             closed.append(node)
 
             # if this node is the goal, stop
-            if problem.isGoalState(node[0]):
-                goal = node
+            if problem.isGoalState(node[0][0]):
+                goal = node[0]
                 break
 
             # otherwise, put all successors in the fringe
-            successors = problem.getSuccessors(node[0])
+            successors = problem.getSuccessors(node[0][0])
             for successor in successors:
-                fringe.push((successor[0], (node[0], successor[1])))
+                fringe.push((successor, node[0]))
 
     # converting the list to a dictionary
     # to allow searching a key (the location)
     # for its value (the previous location and the direction)
     closed = dict(closed)
 
-    # put the (proper) directions in the solution list
-    while goal[0] in closed and goal[1] != s:
-        solution.append(closed[goal[0]][1])
-        goal = closed[goal[0]]
-        # print "Goal node:", goal
+    # while you can go to the goal and while the direction is not STOP
+    while goal in closed and goal[1] != s:
+        # put the direction in the front of the solution
+        solution.insert(0, goal[1])
+        # set the previous state as the new goal
+        goal = closed[goal]
 
-    # since the solution went from the goal to the starting point
-    # the list has to be reversed
-    solution.reverse()
-
-    # remove the very first element
-    solution = solution[1:]
-    
+    print solution
     return solution
 
 def uniformCostSearch(problem):

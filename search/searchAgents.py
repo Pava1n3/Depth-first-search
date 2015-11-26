@@ -297,7 +297,6 @@ class CornersProblem(search.SearchProblem):
         "*** YOUR CODE HERE ***"
         
         return self.startingPosition, (False, False, False, False)
-        # util.raiseNotDefined()
 
     def isGoalState(self, state):
         """
@@ -310,8 +309,7 @@ class CornersProblem(search.SearchProblem):
             seenCorners[self.corners.index(location)] = True
         seenCorners = tuple(seenCorners)
         state = location, seenCorners
-        return seenCorners == (True, True, True, True)
-        # util.raiseNotDefined()
+        return all(seenCorners)
 
     def getSuccessors(self, state):
         """
@@ -382,7 +380,29 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    def manhattanDistance(xy1, xy2):
+        return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+
+    # get the unseen corners
+    unseenCorners = []
+    for i in xrange(3):
+        if not state[1][i]:
+            # the unseen corner is the deadliest
+            unseenCorners.append(corners[i])
+
+    # put the positions of the corners and the state's position in a list
+    positions = unseenCorners
+    positions.insert(0, state[0])
+
+    # calculate the manhattan distance between everything next to each other in the list
+    manhattanDistances = []
+    while len(positions) >= 2:
+        manhattanDistances.append(manhattanDistance(positions.pop(), positions[0]))
+
+    # return the average of every manhattan distance
+    if manhattanDistances == []:
+        return 0
+    return sum(manhattanDistances) / len(manhattanDistances)
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"

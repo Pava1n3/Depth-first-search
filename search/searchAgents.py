@@ -496,7 +496,36 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+
+    def manhattanDistance(xy1, xy2):
+        return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+
+    def closestToPosition(xy, list):
+        closest = 999999,999999
+        for position in list:
+            if manhattanDistance(xy, position) < manhattanDistance(xy, closest):
+                closest = position
+        return closest
+
+    # get the unseen food
+    unseenFood = foodGrid.asList()
+
+    # put the positions of the corners and the state's position in a list
+    positions = [position]
+    while len(unseenFood) >= 1:
+        closestFood = closestToPosition(positions[len(positions) - 1], unseenFood)
+        unseenFood.pop(unseenFood.index(closestFood))
+        positions.append(closestFood)
+
+    # calculate the manhattan distance between everything next to each other in the list
+    manhattanDistances = []
+    while len(positions) >= 2:
+        manhattanDistances.append(manhattanDistance(positions.pop(), positions[0]))
+
+    # return the average of every manhattan distance
+    if len(manhattanDistances) == 0:
+        return 0
+    return sum(manhattanDistances) / len(manhattanDistances)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

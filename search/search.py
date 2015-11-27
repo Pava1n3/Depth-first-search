@@ -197,7 +197,6 @@ def breadthFirstSearch(problem):
         # set the previous state as the new goal
         goal = closed[goal]
 
-    print solution
     return solution
 
 def uniformCostSearch(problem):

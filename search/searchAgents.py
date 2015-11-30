@@ -383,6 +383,13 @@ def cornersHeuristic(state, problem):
     def manhattanDistance(xy1, xy2):
         return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
 
+    def closestToPosition(xy, list):
+        closest = 999999,999999
+        for position in list:
+            if manhattanDistance(xy, position) < manhattanDistance(xy, closest):
+                closest = position
+        return closest
+
     # get the unseen corners
     unseenCorners = []
     for i in xrange(3):
@@ -391,8 +398,12 @@ def cornersHeuristic(state, problem):
             unseenCorners.append(corners[i])
 
     # put the positions of the corners and the state's position in a list
-    positions = unseenCorners
-    positions.insert(0, state[0])
+    position = state[0]
+    positions = [position]
+    while len(unseenCorners) >= 1:
+        closestCorner = closestToPosition(positions[len(positions) - 1], unseenCorners)
+        unseenCorners.pop(unseenCorners.index(closestCorner))
+        positions.append(closestCorner)
 
     # calculate the manhattan distance between everything next to each other in the list
     manhattanDistances = []

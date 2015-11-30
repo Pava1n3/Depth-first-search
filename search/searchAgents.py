@@ -295,7 +295,7 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        
+        # put bools telling whether or not a corner is seen in a tuple with the location 
         return self.startingPosition, (False, False, False, False)
 
     def isGoalState(self, state):
@@ -305,10 +305,16 @@ class CornersProblem(search.SearchProblem):
         "*** YOUR CODE HERE ***"
         location = state[0]
         seenCorners = list(state[1])
+
+        # if the state is an unvisited corner, mark that corner visited
         if location in self.corners:
             seenCorners[self.corners.index(location)] = True
         seenCorners = tuple(seenCorners)
+
+        # change the state to include the new 'seen corners' bools
         state = location, seenCorners
+
+        # return True if all corners are seen (as that's the goal), false otherwise
         return all(seenCorners)
 
     def getSuccessors(self, state):
@@ -324,24 +330,21 @@ class CornersProblem(search.SearchProblem):
         
         location = state[0]
         x, y = location
+
+        # if the current state is an unvisited corner,
+        # mark that corner as visited (in its successors)
         seenCorners = list(state[1])
         if location in self.corners:
             seenCorners[self.corners.index(location)] = True
 
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextx, nexty = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextx][nexty]
-
-            "*** YOUR CODE HERE ***"
-
+            # get the next position if Pacman executes the action
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             next = (nextx, nexty)
+
+            # if the next position is not a wall, add the successor state to the list of successors
             hitsWall = self.walls[nextx][nexty]
             if not hitsWall:
                 successors.append(((next, tuple(seenCorners)), action, 1))
@@ -380,14 +383,19 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     
     "*** YOUR CODE HERE ***"
+    # a function for calculating the manhattan distance between two positions
     def manhattanDistance(xy1, xy2):
         return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
 
+    # a function which returns the closest position (manhattan distance) to 'xy' in list 'list'
     def closestToPosition(xy, list):
         closest = 999999,999999
+        # check for each position in the list if it is closer than the current 'closest' position
+        # if it is, make that the new 'closest'
         for position in list:
             if manhattanDistance(xy, position) < manhattanDistance(xy, closest):
                 closest = position
+        # return the closest position
         return closest
 
     # get the unseen corners
@@ -397,12 +405,17 @@ def cornersHeuristic(state, problem):
             # the unseen corner is the deadliest
             unseenCorners.append(corners[i])
 
-    # put the positions of the corners and the state's position in a list
+    # put the positions of the corners and the state's position in a list:
+    # first of all, put Pacman's location in the list
     position = state[0]
     positions = [position]
+    # then, put the location closest to the last position in the list at the end of the list
     while len(unseenCorners) >= 1:
+        # get the corner closest to the last position in the list
         closestCorner = closestToPosition(positions[len(positions) - 1], unseenCorners)
+        # remove that corner from the list of unseen corners
         unseenCorners.pop(unseenCorners.index(closestCorner))
+        # put that corner at the end of the list with positions
         positions.append(closestCorner)
 
     # calculate the manhattan distance between everything next to each other in the list
@@ -507,25 +520,38 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
+    ################################################################
+    # NOTE: This works *exactly* the same as the corners heuristic #
+    ################################################################
 
+    # a function for calculating the manhattan distance between two positions
     def manhattanDistance(xy1, xy2):
         return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
 
+    # a function which returns the closest position (manhattan distance) to 'xy' in list 'list'
     def closestToPosition(xy, list):
         closest = 999999,999999
+        # check for each position in the list if it is closer than the current 'closest' position
+        # if it is, make that the new 'closest'
         for position in list:
             if manhattanDistance(xy, position) < manhattanDistance(xy, closest):
                 closest = position
+        # return the closest position
         return closest
 
     # get the unseen food
     unseenFood = foodGrid.asList()
 
-    # put the positions of the corners and the state's position in a list
+    # put the positions of the corners and the state's position in a list:
+    # first of all, put Pacman's location in the list
     positions = [position]
+    # then, put the location closest to the last position in the list at the end of the list
     while len(unseenFood) >= 1:
+        # get the food closest to the last position in the list
         closestFood = closestToPosition(positions[len(positions) - 1], unseenFood)
+        # remove that food from the list of unseen food
         unseenFood.pop(unseenFood.index(closestFood))
+        # put that food at the end of the list of positions
         positions.append(closestFood)
 
     # calculate the manhattan distance between everything next to each other in the list
@@ -567,8 +593,9 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
+        # do BFS with AnyFoodSearchProlem (which has as goal state 'any food')
+        # since BFS searches breadth first, you will always get the closest food
         from search import breadthFirstSearch
-
         return breadthFirstSearch(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -606,6 +633,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
 
         "*** YOUR CODE HERE ***"
         food = self.food.asList()
+        # if the state is (unvisited) food, return True, otherwise False
         return state in food
 
 def mazeDistance(point1, point2, gameState):

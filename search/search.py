@@ -115,6 +115,7 @@ def depthFirstSearch(problem):
         node = fringe.pop()
 
         # check if currentLocation is not a currentLocation in the closed list
+        # or in other words, check if this location has already been visited/expanded
         if node[0][0] not in [x[0][0] for x in closed]:
             # if it isn't, put it in the closed list
             closed.append(node)
@@ -146,12 +147,15 @@ def depthFirstSearch(problem):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
+    # state: (currentLocation, directionFromPrevtoCurr, cost)
+    # node:  (currentState, previousState)
+    #       ((currentLocation, directionFromPrevToCurr, cost), (previousLocation, _, cost))
+
     from game import Directions
     s = Directions.STOP
     
-    # the stack, our 'fringe'
-    # an item in this stack is a node
+    # the queue, our 'fringe'
+    # an item in this queue is a node
     fringe = util.Queue()
 
     # 'closed', the list of visited nodes
@@ -171,6 +175,7 @@ def breadthFirstSearch(problem):
         node = fringe.pop()
 
         # check if currentLocation is not a currentLocation in the closed list
+        # or in other words, check if this location has already been visited/expanded
         if node[0][0] not in [x[0][0] for x in closed]:
             # if it isn't, put it in the closed list
             closed.append(node)
@@ -201,35 +206,15 @@ def breadthFirstSearch(problem):
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    """
-    procedure UniformCostSearch(Graph, start, goal)
-    node ← start
-    cost ← 0
-    frontier ← priority queue containing node only
-    explored ← empty set
-    do
-        if frontier is empty
-          return failure
-        node ← frontier.pop()
-        if node is goal
-          return solution
-        explored.add(node)
-        for each of node's neighbors n
-          if n is not in explored
-            if n is not in frontier
-              frontier.add(n)
-            else if n is in frontier with higher cost
-              replace existing node with n
-    """
-    
-    "We will need to use getCostOfActions probably, as this returns the correct cost of moving somewhere"
+    # state: (currentLocation, directionFromPrevtoCurr, cost)
+    # node:  (currentState, previousState)
+    #       ((currentLocation, directionFromPrevToCurr, cost), (previousLocation, _, cost))
     
     from game import Directions
     s = Directions.STOP
     
-    # the stack, our 'fringe'
-    # an item in this stack is a node
+    # the priority queue, our 'fringe'
+    # an item in this queue is a node
     fringe = util.PriorityQueue()
 
     # 'closed', the list of visited nodes
@@ -249,6 +234,7 @@ def uniformCostSearch(problem):
         node = fringe.pop()
 
         # check if currentLocation is not a currentLocation in the closed list
+        # or in other words, check if this location has already been visited/expanded
         if node[0][0] not in [x[0][0] for x in closed]:
             # if it isn't, put it in the closed list
             closed.append(node)
@@ -261,10 +247,15 @@ def uniformCostSearch(problem):
             # otherwise, put all successors in the fringe
             successors = problem.getSuccessors(node[0][0])
             for successor in successors:
+                # calculate the total cost up until now
                 cost = successor[2] + node[0][2]
+
+                # set the cost stored in the successor's state to the actual cost
                 successor = list(successor)
                 successor[2] = cost
                 successor = tuple(successor)
+
+                # put it in the priority queue with the actual cost
                 fringe.push((successor, node[0]), cost)
 
     # converting the list to a dictionary
@@ -291,12 +282,15 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
+    # state: (currentLocation, directionFromPrevtoCurr, cost)
+    # node:  (currentState, previousState)
+    #       ((currentLocation, directionFromPrevToCurr, cost), (previousLocation, _, cost))
+
     from game import Directions
     s = Directions.STOP
     
-    # the stack, our 'fringe'
-    # an item in this stack is a node
+    # the priority queue, our 'fringe'
+    # an item in this queue is a node
     fringe = util.PriorityQueue()
 
     # 'closed', the list of visited nodes
@@ -316,6 +310,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         node = fringe.pop()
 
         # check if currentLocation is not a currentLocation in the closed list
+        # or in other words, check if this location has already been visited/expanded
         if node[0][0] not in [x[0][0] for x in closed]:
             # if it isn't, put it in the closed list
             closed.append(node)
@@ -328,10 +323,15 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             # otherwise, put all successors in the fringe
             successors = problem.getSuccessors(node[0][0])
             for successor in successors:
+                # calculate the total cost up until now
                 actualCost = successor[2] + node[0][2]
+                
+                # set the cost stored in the successor's state to the actual cost
                 successor = list(successor)
                 successor[2] = actualCost
                 successor = tuple(successor)
+
+                # calculate the estimated cost, and put the successor in the priority queue with that cost
                 estimatedCost = actualCost + heuristic(successor[0], problem)
                 fringe.push((successor, node[0]), estimatedCost)
 
